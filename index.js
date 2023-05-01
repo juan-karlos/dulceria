@@ -1,61 +1,57 @@
 const express=require('express');
 const morgan=require('morgan');
-const mongoose =require('mongoose');
+const mongoose=require('mongoose');
+const Dulces = require('./Dulces');
 const app=express();
-const dulce=require('./Dulce');
-//setings
-//que es ejs 
+//Settings 
 app.set('port',process.env.PORT||3400);
-// aqui asignamos que utilice un motor de plantillas que nosotros creamos en la carpeta views
-app.set('view engine','ejs')
-// conexion a la base de datos mongooose es una libreria para poder conectsar la base de datps con expres 
-//promesas en java script
-mongoose.connect('mongodb+srv://juank21mal:gpUlTHOWU9Pak9F2@cluster0.xyimpq0.mongodb.net/Dulceria?retryWrites=true&w=majority')
-.then(db=> console.log("conectado a mongo perro"))
-.catch(err => console.error(err));    
-//midewords
-app.use (morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({extended:false}))
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({extended:false}));
 
-//Peticiones rutas  cuando se hace una peticion se hace mediante una ruta
-  // rutes
+//Middlewares
+app.use(morgan('dev'));
+app.use(express.json()); 
+//Conexión a mongodb atlas
+mongoose.connect("mongodb+srv://juank21mal:gpUlTHOWU9Pak9F2@cluster0.xyimpq0.mongodb.net/Dulceria?retryWrites=true&w=majority")
+.then(db=> console.log("Mongodb atlas connected"))
+.catch(err=> console.error(err));
 
-//   mostrar productos
+//Routes
 app.get("/",async(req,res)=>{
-    const dulces= await dulce.find()
-    //res.render('index',{dulces})
-    res.json(dulces)
+    const dulces=await Dulces.find();
+    res.render('index',{dulces});
+});
+
+//Insertar dulces
+app.post("/insertarDulce",async(req,res)=>{
+    const dulceInsertado=new Dulces(req.body);
+    await dulceInsertado.save();
+    res.redirect("/");
+}); 
+
+//Editar
+app.get("/:cb",async(req,res)=>{
+    const dulces = await Dulces.findOne({codigobarras:req.params.cb});
+    res.render('editarDulceria',{dulces});
 })
 
-// guardar ducles
-app.post("/insertar",async(req,res)=>{
-    const dulceinsert= new dulce(req.body);
-    await dulceinsert.save();
-    res.json('{"estatus":"Producto Guardado"}');
-    // res.redirect("/")
-})
-// mostrar dulces por codigo de barras
-app.get("/editar/:cb",async(req,res)=>{
-   const dulces= await dulce.findOne({codigobarras:req.params.cb})
-   //res.render('editar',{dulce})
-   res.json(dulces)
+//Actualizar
+app.post("/actualizar/:cb",async(req,res)=>{
+    await Dulces.findOneAndUpdate({codigobarras:req.params.cb},req.body);
+    res.redirect("/");
+});
+
+//Eliminar
+app.get("/eliminar/:cb",async(req,res)=>{
+    await Dulces.findOneAndDelete({codigobarras:req.params.cb},req.body);
+    res.redirect("/");
 })
 
-// eliminar por codigo de barras
-app.delete("/eliminar/:cb",async(req,res)=>{
-    await dulce.findOneAndDelete({codigobarras:req.params.cb})
-    res.json('{"Estatus":eliminado}')
-})
-
-
-//acualizar
-
-app.put("/actualizar/:cb",async(req,res)=>{
-    await dulce.findOneAndUpdate({codigobarras:req.params.cb},req.body)
-    // res.redirect("/")
-    res.json('{"Estatus":"dulce Actualizado"}')
- })
+//Eliminar todos los dulces
+app.get("/eliminartodoslosdulces",async(req,res)=>{
+    await Dulces.deleteMany();
+    res.redirect("/");
+});
 
 app.listen(app.get('port'),()=>{
     console.log("servidor escuchando en el puerto 3400");
