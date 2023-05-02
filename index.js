@@ -47,6 +47,12 @@ app.get("/eliminar/:cb",async(req,res)=>{
     res.redirect("/");
 })
 
+//Consultar un solo Dulce
+app.get("/consultar",async (req, res)=>{
+    const dulce = await Dulces.findOne({codigobarras:req.params.cb});
+    res.json(dulce);
+});
+
 //Eliminar todos los dulces
 app.get("/eliminartodoslosdulces",async(req,res)=>{
     await Dulces.deleteMany();
