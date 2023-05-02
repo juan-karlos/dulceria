@@ -2,7 +2,7 @@ const express=require('express');
 const morgan=require('morgan');
 const mongoose=require('mongoose');
 const Dulces = require('./Dulces');
-const Proveedor = require('./Proveedor');
+const proveedor= require('./Proveedor')
 const app=express();
 //Settings 
 app.set('port',process.env.PORT||3400);
@@ -19,8 +19,9 @@ mongoose.connect("mongodb+srv://juank21mal:gpUlTHOWU9Pak9F2@cluster0.xyimpq0.mon
 
 //Routes
 app.get("/",async(req,res)=>{
-    const dulces=await Dulces.find();
-    res.render('index',{dulces});
+    const dulce=await Dulces.find();
+    res.render('index',{dulce});
+    // res.json(dulce);
 });
 app.get("/consola",async(req,res)=>{
     const dulces=await Dulces.find();
@@ -70,56 +71,61 @@ app.get("/eliminartodoslosdulces",async(req,res)=>{
     res.redirect("/");
 });
 
+//------------------------------provedores
+app.get("/provedor",async(req,res)=>{
+    const provedor =await proveedor.find()
+    res.json(provedor)
 
-//Proveedores
-
-app.get("/proveedores",async(req,res)=>{
-    const proveedores=await Proveedor.find();
-    res.render('indexProveedor',{proveedores});
+});
+app.get("/consola",async(req,res)=>{
+    const dulces=await Dulces.find();
+    res.json(dulces)
 });
 
-//Insertar proveedores
+//Insertar dulces
 app.post("/insertarProveedor",async(req,res)=>{
-    const proveedorInsertado=new Proveedor(req.body);
-    await proveedorInsertado.save();
+    const dulceInsertado=new Dulces(req.body);
+    await dulceInsertado.save();
     res.redirect("/");
 }); 
 
 //Editar
-app.get("/:id",async(req,res)=>{
-    const proveedores = await Proveedor.findOne({id:req.params.id});
-    res.render('editarProveedor',{proveedores});
+app.get("/:cb",async(req,res)=>{
+    const dulces = await Dulces.findOne({codigobarras:req.params.cb});
+    res.render('editar',{dulces});
 })
 
 //Actualizar
-app.post("/actualizar/:id",async(req,res)=>{
-    await Proveedor.findOneAndUpdate({id:req.params.id},req.body);
+app.post("/actualizar/:cb",async(req,res)=>{
+    await Dulces.findOneAndUpdate({codigobarras:req.params.cb},req.body);
     res.redirect("/");
 });
 
 //Actualizar todos
 app.post("/actualizartodos",async(req,res)=>{
-    await Proveedor.updateMany(req.body);
+    await Dulces.updateMany(req.body);
     res.redirect("/");
 });
 
 //Eliminar
-app.get("/eliminar/:id",async(req,res)=>{
-    await Proveedor.findOneAndDelete({id:req.params.id},req.body);
+app.get("/eliminar/:cb",async(req,res)=>{
+    await Dulces.findOneAndDelete({codigobarras:req.params.cb},req.body);
     res.redirect("/");
 })
 
 //Consultar un solo Dulce
-app.get("/consultarProveedor",async (req, res)=>{
-    const proveedor = await Proveedor.findOne({id:req.params.id});
-    res.json(proveedor);
+app.get("/consultar",async (req, res)=>{
+    const dulce = await Dulces.findOne({codigobarras:req.params.cb});
+    res.json(dulce);
 });
 
 //Eliminar todos los dulces
-app.get("/eliminartodoslosProveedores",async(req,res)=>{
-    await Proveedor.deleteMany();
+app.get("/eliminartodoslosdulces",async(req,res)=>{
+    await Dulces.deleteMany();
     res.redirect("/");
 });
+
+
 
 app.listen(app.get('port'),()=>{
     console.log("servidor escuchando en el puerto 3400");

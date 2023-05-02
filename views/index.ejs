@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Dulceria</title>
 </head>
-<body style="background-color: rgb(226, 43, 134);">
+<body style="background-image: url(https://static.vecteezy.com/system/resources/previews/002/705/130/non_2x/background-of-delicious-candies-icons-vector.jpg);">
     <!--recordar a la peque que eaqui esta su problema en la clase container-->
     <div class="container" >
         <div class="row">
@@ -25,7 +25,7 @@
                   <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                       <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Dulces</a>
+                        <a class="nav-link active" aria-current="page" href="registro">Dulces</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="#Proveedores">Proveedores</a>
@@ -53,7 +53,9 @@
                 </div>
               </nav>
         </div>
-        <div class="row">
+
+        <div data-role="page" data-theme="pinck" id ="registro">
+           <div class="row">
             <div class="col-lg-5">
                 <!--Aqui va el formulario del registro-->
                 <div class="card">
@@ -94,8 +96,13 @@
                               <div class="col-lg-3">
                                 <button class="btn btn-primary">Guardar</button>
                               </div>
+                              <!-- <div class="col-lg-4">
+
+                                <a href="/provedor" class="btn btn-warning">provedor</a>
+                              </div> -->
                             </div>
                         </form> 
+                        
                     </div>
                 </div>
             </div>
@@ -116,7 +123,7 @@
                 </thead>
                 <tbody>
                   <!--Cuerpo-->
-                  <% dulces.forEach(dulces=>{ %>
+                  <% dulce.forEach(dulces=>{ %>
                       <tr>
                           <td><%= dulces.codigobarras %></td>
                           <td><%= dulces.nombre%></td>
@@ -139,7 +146,12 @@
                 </tbody>
               </table>
             </div>    
+           </div>
         </div>
+
+       
+
     </div>
 </body>
+
 </html>
