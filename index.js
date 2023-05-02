@@ -2,6 +2,7 @@ const express=require('express');
 const morgan=require('morgan');
 const mongoose=require('mongoose');
 const Dulces = require('./Dulces');
+const Proveedor = require('./Proveedor');
 const app=express();
 //Settings 
 app.set('port',process.env.PORT||3400);
@@ -66,6 +67,57 @@ app.get("/consultar",async (req, res)=>{
 //Eliminar todos los dulces
 app.get("/eliminartodoslosdulces",async(req,res)=>{
     await Dulces.deleteMany();
+    res.redirect("/");
+});
+
+
+//Proveedores
+
+app.get("/proveedores",async(req,res)=>{
+    const proveedores=await Proveedor.find();
+    res.render('indexProveedor',{proveedores});
+});
+
+//Insertar proveedores
+app.post("/insertarProveedor",async(req,res)=>{
+    const proveedorInsertado=new Proveedor(req.body);
+    await proveedorInsertado.save();
+    res.redirect("/");
+}); 
+
+//Editar
+app.get("/:id",async(req,res)=>{
+    const proveedores = await Proveedor.findOne({id:req.params.id});
+    res.render('editarProveedor',{proveedores});
+})
+
+//Actualizar
+app.post("/actualizar/:id",async(req,res)=>{
+    await Proveedor.findOneAndUpdate({id:req.params.id},req.body);
+    res.redirect("/");
+});
+
+//Actualizar todos
+app.post("/actualizartodos",async(req,res)=>{
+    await Proveedor.updateMany(req.body);
+    res.redirect("/");
+});
+
+//Eliminar
+app.get("/eliminar/:id",async(req,res)=>{
+    await Proveedor.findOneAndDelete({id:req.params.id},req.body);
+    res.redirect("/");
+})
+
+//Consultar un solo Dulce
+app.get("/consultarProveedor",async (req, res)=>{
+    const proveedor = await Proveedor.findOne({id:req.params.id});
+    res.json(proveedor);
+});
+
+//Eliminar todos los dulces
+app.get("/eliminartodoslosProveedores",async(req,res)=>{
+    await Proveedor.deleteMany();
     res.redirect("/");
 });
 
