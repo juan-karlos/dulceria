@@ -41,6 +41,12 @@ app.post("/actualizar/:cb",async(req,res)=>{
     res.redirect("/");
 });
 
+//Actualizar todos
+app.post("/actualizartodos",async(req,res)=>{
+    await Dulces.updateMany(req.body);
+    res.redirect("/");
+});
+
 //Eliminar
 app.get("/eliminar/:cb",async(req,res)=>{
     await Dulces.findOneAndDelete({codigobarras:req.params.cb},req.body);
