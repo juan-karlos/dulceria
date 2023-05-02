@@ -21,6 +21,10 @@ app.get("/",async(req,res)=>{
     const dulces=await Dulces.find();
     res.render('index',{dulces});
 });
+app.get("/consola",async(req,res)=>{
+    const dulces=await Dulces.find();
+    res.json(dulces)
+});
 
 //Insertar dulces
 app.post("/insertarDulce",async(req,res)=>{
@@ -32,7 +36,7 @@ app.post("/insertarDulce",async(req,res)=>{
 //Editar
 app.get("/:cb",async(req,res)=>{
     const dulces = await Dulces.findOne({codigobarras:req.params.cb});
-    res.render('editarDulceria',{dulces});
+    res.render('editar',{dulces});
 })
 
 //Actualizar

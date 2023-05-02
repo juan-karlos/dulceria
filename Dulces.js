@@ -8,7 +8,7 @@ const dulcesSchema=new Schema({
     },
     nombre:String,
     marca:String,
-    codigoneto:String,
+    contenido_neto:String,
     precioventa:String,
     existencias:String
 },{
